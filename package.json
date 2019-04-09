@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/yij793/tinyApp/issues"
   },
-  "homepage": "https://github.com/yij793/tinyApp#readme"
+  "homepage": "https://github.com/yij793/tinyApp#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
