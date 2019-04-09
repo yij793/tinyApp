@@ -1,0 +1,22 @@
+{
+  "name": "tinyapp",
+  "version": "1.0.0",
+  "description": "tinyAPP project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/yij793/tinyApp.git"
+  },
+  "keywords": [
+    "Express.js"
+  ],
+  "author": "yiyao jian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yij793/tinyApp/issues"
+  },
+  "homepage": "https://github.com/yij793/tinyApp#readme"
+}
