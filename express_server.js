@@ -2,7 +2,11 @@ var express = require("express");// adding express into our servers
 var app = express();/// store express() in a var
 var PORT = 8081; // default port 8081
 const bodyParser = require("body-parser"); ///add bodyParser into our servers
+const cookie = require('cookie');// add cookie to our server
+const cookieParser = require('cookie-parser');
+app.use(cookieParser()); ///using cookieParser
 
+/// MY DATABASE
 var urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com"
@@ -23,7 +27,8 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get('/urls', (req, res) => {
-    let templateVars = { urls: urlDatabase };
+    let templateVars = { urls: urlDatabase, username: req.cookies.username };
+
     res.render("urls_index", templateVars)
 })
 
@@ -69,3 +74,11 @@ function generateRandomString() {
     }
     return randomCode
 }
+app.post('/login', (req, res) => {
+    res.cookie('username', req.body.username)
+    res.redirect('/urls')
+})
+app.post('/logout', (req, res) => {
+    res.clearCookie('username')
+    res.redirect('/urls')
+})
