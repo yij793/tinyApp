@@ -26,25 +26,27 @@ app.get('/urls', (req, res) => {
     let templateVars = { urls: urlDatabase };
     res.render("urls_index", templateVars)
 })
-/*app.get("/urls/:shortURL", (req, res) => {
+
+
+app.get('/urls/new', (req, res) => {
+    let templateVars = { urls: urlDatabase };
+    res.render("urls_new", templateVars);
+})
+app.get("/urls/:shortURL", (req, res) => {
     let values = req.params.shortURL;
     let data = urlDatabase[values]
     let templateVars = { shortURL: values, longURL: data };
     res.render("urls_show", templateVars);
 });
-*/
-app.get('/urls/new', (req, res) => {
-    let templateVars = { urls: urlDatabase };
-    res.render("urls_new", templateVars);
-})
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/urls", (req, res) => {
-    console.log(req.body);  // Log the POST request body to the console
+    console.log(req, res);  // Log the POST request body to the console
     res.send("Ok");         // Respond with 'Ok' (we will replace this)
     urlDatabase[generateRandomString()] = req.body.longURL
     console.log(urlDatabase)
 });
+
 app.get("/u/:shortURL", (req, res) => {
     // const longURL = ...
     let values = req.params.shortURL;
