@@ -52,6 +52,11 @@ app.get("/u/:shortURL", (req, res) => {
     let templateVars = { shortURL: values, longURL: data };
     res.redirect(templateVars.longURL);
 });
+app.post('/urls/:shortURL/delete', (req, res) => {
+    let values = req.params.shortURL;
+    delete urlDatabase[values]
+    res.redirect('/urls')
+})
 
 function generateRandomString() {
     var randomCode = '';
