@@ -19,8 +19,11 @@
     <ul>
         <% for(x in urls){%>
         <li>
-            <%= x %> :
-            <%= urls[x] %>
+            <form method="POST" action="/urls/<%= x %>/delete">
+                <%= x %> :
+                <%= urls[x] %>
+                <a href='/urls/new'>Edit</a>
+                <input type="submit" value="delete"></form>
         </li>
         <% } %>
     </ul>
