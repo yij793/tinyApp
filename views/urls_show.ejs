@@ -15,11 +15,12 @@
     <% include partials/_header %>
     <h1>TinyApp</h1>
     <a href=#> Creat New TinyURL</a>
-    <h2>Tiny URL for
-        <a href=#>
-            <%= longURL %></a>
+    <h2>Tiny URL for :
+        <%= shortURL %>
     </h2>
-    <%= shortURL %>
+    <form action='...'>
+        <input type='text' size='50' value=<%=longURL %> ><input type='submit' value='update'>
+    </form>
 
 
 </body>
