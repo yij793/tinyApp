@@ -1,1 +1,16 @@
 <header>this is a header</header>
+
+<% if(username){ %>
+<form method='POST' action='/logout'>
+    Login as
+    <%= username %> <br>
+    <input type='submit' value='Logout'>
+</form>
+<% }else{%>
+<form method="POST" action='/login'>
+    User Name: <br>
+    <input type='text' name='username'><br>
+    <br>
+    <input type='submit' value='login' style="background-color:DodgerBlue;">
+</form>
+<% } %>
