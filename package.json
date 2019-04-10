@@ -22,6 +22,8 @@
   "homepage": "https://github.com/yij793/tinyApp#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cookie": "^0.3.1",
+    "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
     "express": "^4.16.4"
   },
