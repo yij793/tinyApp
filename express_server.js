@@ -1,15 +1,14 @@
 var express = require("express");// adding express into our servers
 var app = express();/// store express() in a var
-var PORT = 8081; // default port 8081
-const bodyParser = require("body-parser"); ///add bodyParser into our servers
-const cookie = require('cookie');// add cookie to our server
+var PORT = 8081;
+const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 app.use(cookieParser()); ///using cookieParser
 
 /// MY DATABASE
 var urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+    "b2xVn2": { logURL: "http://www.lighthouselabs.ca", userID: 'aJ48lW' },
+    "9sm5xK": { logURL: "http://www.google.com", userID: 'aJ48lW' }
 };
 const users = {
     "userRandomID": {
@@ -40,15 +39,16 @@ app.get("/hello", (req, res) => {
 });
 app.get('/urls', (req, res) => {
     let templateVars = { urls: urlDatabase, user_id: req.cookies.user_id };
-    console.log(req.cookies.user_id)
-    console.log(users)
-    console.log(Object.keys(users).length)
+    // console.log(req.cookies.user_id)
+    // console.log(users)
+    // console.log(Object.keys(users).length)
     res.render("urls_index", templateVars)
 })
 
 
 app.get('/urls/new', (req, res) => {
-    let templateVars = { urls: urlDatabase };
+    let templateVars = { urls: urlDatabase, user_id: req.cookies.user_id };
+    console.log(templateVars.user_id)
     res.render("urls_new", templateVars);
 })
 app.get("/urls/:shortURL", (req, res) => {
@@ -60,9 +60,9 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/urls", (req, res) => {
-    res.send("Ok");         // Respond with 'Ok' (we will replace this)
     urlDatabase[generateRandomString()] = req.body.longURL
-    console.log(urlDatabase)
+    console.log(req.body)
+
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -89,7 +89,7 @@ function generateRandomString() {
 }
 function checkRegister(em) {
     const userID = Object.keys(users)
-    console.log('userID is:   ', userID)
+    // console.log('userID is:   ', userID)
     const user = userID.filter(item => {
         return users[item].email === em
     })
@@ -99,13 +99,13 @@ function checkRegister(em) {
 }
 function loginCheck(em, pw) {
     const userID = Object.keys(users)
-    console.log('userID is:   ', userID)
+    // console.log('userID is:   ', userID)
     const user = userID.filter(item => {
-        console.log('items are:  ', users[item].email)
-        console.log('password input is:   ', pw)
-        console.log('email input is:   ', typeof em)
-        console.log('email inside users is :  ', typeof users[item].email)
-        console.log('true or false?   ', users[item].email === em)
+        // console.log('items are:  ', users[item].email)
+        // console.log('password input is:   ', pw)
+        // console.log('email input is:   ', typeof em)
+        // console.log('email inside users is :  ', typeof users[item].email)
+        // console.log('true or false?   ', users[item].email === em)
         return users[item].email === em
     })
     console.log('user name is:   ', user)
