@@ -22,7 +22,7 @@
             <form method="POST" action="/urls/<%= x %>/delete">
                 <%= x %> :
                 <%= urls[x] %>
-                <a href='/urls/new'>Edit</a>
+                <a href='/urls/ <%= x %>'>Edit</a>
                 <input type="submit" value="delete"></form>
         </li>
         <% } %>
