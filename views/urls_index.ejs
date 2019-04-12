@@ -20,14 +20,20 @@
         <% for( var i=0;i< totalLength; i++){ %>
         <li>
             <form method="POST" action='/urls/<%= shortURL[i] %>/delete'>
-                <%= shortURL[i]  %> :
+                <a href='<%= urls[i] %>'>
+                    <%= shortURL[i]  %></a> :
                 <%= urls[i] %>
-                <a href='/urls/ <%= shortURL[i] %>'>Edit</a>
+                <a href='/urls/<%= shortURL[i] %>'>Edit</a>
                 <input type="submit" value="delete">
             </form>
         </li>
         <% } %>
     </ul>
+    <h3>shortURL</h3>
+    <% for( x of showShorturls){ %>
+    <a href='/u/<%= x %>'>
+        <%= x %></a> <br>
+    <% } %>
 
 </body>
 

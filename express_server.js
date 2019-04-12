@@ -14,10 +14,11 @@ app.use(cookieSession({
 }))
 
 
-/// MY DATABASE
+/// MY DATABASES
 var urlDatabase = {
     b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-    i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+    i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
+    srFwes: { longURL: "https://www.baidu.com", userID: "random1ID" }
 };
 const users = {
     "userRandomID": {
@@ -31,80 +32,9 @@ const users = {
         password: bcrypt.hashSync("dishwasher-funk", 10)
     }
 }
-app.set("view engine", "ejs");
-
-app.get("/", (req, res) => {
-    res.send("Hello!");
-});
-app.get("/urls.json", (req, res) => {
-    res.json(urlDatabase);
-});
-// port listener
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
-});
-app.get("/hello", (req, res) => {
-    res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-app.get('/urls', (req, res) => {
-    const userID = req.session.ids;
-    console.log(userID)
-    const email = req.session.user_id;
-    const id_longURL = urlsForUser(userID);
-    const id_shortURL = findShortURL(userID);
-    const totalLength = id_longURL.length;
-    const templateVars = { urls: id_longURL, user_id: userID, shortURL: id_shortURL, userEmail: email, totalLength: totalLength };
-    // console.log('url is:   ', templateVars.urls)
-    // console.log('shortURL is:   ', templateVars.shortURL)
-    // console.log('user_id is:    ', templateVars.user_id)
-    res.render("urls_index", templateVars)
-})
-
-
-app.get('/urls/new', (req, res) => {
-    let templateVars = { urls: urlDatabase, user_id: req.session.user_id };
-    // console.log(templateVars.user_id)
-    res.render("urls_new", templateVars);
-})
-
-app.get("/urls/:shortURL", (req, res) => {
-    let values = req.params.shortURL;
-    let data = urlDatabase[values]
-    let templateVars = { shortURL: values, longURL: data };
-    res.render("urls_show", templateVars);
-});
-app.post('/urls/:shortURL/updata', (req, res) => {
-
-    const { longURL } = req.body;
-    const { shortURL } = req.params
-    res.redirect('/urls')
-})
-app.post("/urls", (req, res) => {
-    const { longURL } = req.body;
-    const randomID = generateRandomString()
-    urlDatabase[randomID] = {
-        longURL: longURL,
-        userID: req.session.ids
-    }
-    res.redirect('/urls')
-
-});
-
-app.get("/u/:shortURL", (req, res) => {
-    // const longURL = ...
-    let values = req.params.shortURL;
-    let data = urlDatabase[values]
-    let templateVars = { shortURL: values, longURL: data };
-    res.redirect(templateVars.longURL);
-});
-app.post('/urls/:shortURL/delete', (req, res) => {
-    let values = req.params.shortURL;
-    delete urlDatabase[values]
-    res.redirect('/urls')
-})
-//////////////////////
-/////////////////////
-/////functions///////
+////////////////////////
+////////////////////////
+/////MY Functions///////
 function generateRandomString() {
     var randomCode = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -167,6 +97,86 @@ function findShortURL(id) {
 //////////////////////
 /////////////////////
 ////////////////////
+//////MY SERVERSE
+app.set("view engine", "ejs");
+
+app.get("/", (req, res) => {
+    res.send("Hello!");
+});
+app.get("/urls.json", (req, res) => {
+    res.json(urlDatabase);
+});
+// port listener
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}!`);
+});
+app.get("/hello", (req, res) => {
+    res.send("<html><body>Hello <b>World</b></body></html>\n");
+});
+app.get('/urls', (req, res) => {
+    const userID = req.session.ids;
+    const email = req.session.user_id;
+    const id_longURL = urlsForUser(userID);
+    const id_shortURL = findShortURL(userID);
+    const totalLength = id_longURL.length;
+    const allShortURLs = Object.keys(urlDatabase)
+    console.log(allShortURLs)
+    const templateVars = { urls: id_longURL, user_id: userID, shortURL: id_shortURL, userEmail: email, totalLength: totalLength, showShorturls: allShortURLs };
+    // console.log('url is:   ', templateVars.urls)
+    // console.log('shortURL is:   ', templateVars.shortURL)
+    // console.log('user_id is:    ', templateVars.user_id)
+    res.render("urls_index", templateVars)
+})
+
+
+app.get('/urls/new', (req, res) => {
+    let templateVars = { urls: urlDatabase, user_id: req.session.user_id };
+    // console.log(templateVars.user_id)
+    res.render("urls_new", templateVars);
+})
+
+app.get("/urls/:shortURL", (req, res) => {
+    let values = req.params.shortURL;
+    let data = urlDatabase[values]
+    let templateVars = { shortURL: values, longURL: data };
+    res.render("urls_show", templateVars);
+});
+app.post('/urls/:shortURL/updata', (req, res) => {
+
+    const { longURL } = req.body;
+    console.log('longurl is :   ', longURL)
+    const { shortURL } = req.params
+
+    console.log('showURL is:', shortURL)
+    console.log('Longurl in database', urlDatabase[shortURL])
+    console.log('urlDATABASE IS :     ', urlDatabase)
+
+    urlDatabase[shortURL].longURL = longURL
+    res.redirect('/urls')
+})
+app.post("/urls", (req, res) => {
+    const { longURL } = req.body;
+    const randomID = generateRandomString()
+    urlDatabase[randomID] = {
+        longURL: longURL,
+        userID: req.session.ids
+    }
+    res.redirect('/urls')
+
+});
+
+app.get("/u/:shortURL", (req, res) => {
+    // const longURL = ...
+    const { shortURL } = req.params;
+    const { longURL } = urlDatabase[shortURL]
+    console.log(longURL)
+    res.redirect(longURL);
+});
+app.post('/urls/:shortURL/delete', (req, res) => {
+    let values = req.params.shortURL;
+    delete urlDatabase[values]
+    res.redirect('/urls')
+})
 app.post('/login', (req, res) => {
     const { email, password } = req.body
     // console.log('input password is   ', password)
