@@ -4,6 +4,7 @@ var PORT = 8081;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 app.use(cookieParser()); ///using cookieParser
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /// MY DATABASE
 var urlDatabase = {
@@ -40,7 +41,10 @@ app.get("/hello", (req, res) => {
 app.get('/urls', (req, res) => {
     const userID = req.cookies.ids;
     const email = req.cookies.user_id;
-    const templateVars = { urls: urlDatabase, user_id: userID, shortURL: Object.keys(urlDatabase), userEmail: email };
+    const id_longURL = urlsForUser(userID);
+    const id_shortURL = findShortURL(userID);
+    const totalLength = id_longURL.length;
+    const templateVars = { urls: id_longURL, user_id: userID, shortURL: id_shortURL, userEmail: email, totalLength: totalLength };
     // console.log('url is:   ', templateVars.urls)
     // console.log('shortURL is:   ', templateVars.shortURL)
     // console.log('user_id is:    ', templateVars.user_id)
@@ -53,14 +57,19 @@ app.get('/urls/new', (req, res) => {
     // console.log(templateVars.user_id)
     res.render("urls_new", templateVars);
 })
+
 app.get("/urls/:shortURL", (req, res) => {
     let values = req.params.shortURL;
     let data = urlDatabase[values]
     let templateVars = { shortURL: values, longURL: data };
     res.render("urls_show", templateVars);
 });
+app.post('/urls/:shortURL/updata', (req, res) => {
 
-app.use(bodyParser.urlencoded({ extended: true }));
+    const { longURL } = req.body;
+    const { shortURL } = req.params
+    res.redirect('/urls')
+})
 app.post("/urls", (req, res) => {
     const { longURL } = req.body;
     const randomID = generateRandomString()
@@ -84,7 +93,9 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     delete urlDatabase[values]
     res.redirect('/urls')
 })
-
+//////////////////////
+/////////////////////
+/////functions///////
 function generateRandomString() {
     var randomCode = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -133,9 +144,22 @@ function findUserIDbyEmail(em) {
     return user.join('')
 }
 function urlsForUser(id) {
+    const urls = []
+    for (item in urlDatabase) {
+        if (id === urlDatabase[item].userID) {
+            urls.push(urlDatabase[item].longURL)
+        }
+    }
+    return urls
+}
+function findShortURL(id) {
+    const dbKeys = Object.keys(urlDatabase);
+    return dbKeys.filter(item => { return urlDatabase[item].userID === id })
 
 }
-
+//////////////////////
+/////////////////////
+////////////////////
 app.post('/login', (req, res) => {
     const { email, password } = req.body
     // console.log('input password is   ', password)
