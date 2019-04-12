@@ -18,8 +18,10 @@ app.use(cookieSession({
 var urlDatabase = {
     b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
     i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
-    srFwes: { longURL: "https://www.baidu.com", userID: "random1ID" }
+    srFwes: { longURL: "https://www.baidu.com", userID: "userRandomID" }
 };
+
+
 const users = {
     "userRandomID": {
         id: "userRandomID",
@@ -32,9 +34,18 @@ const users = {
         password: bcrypt.hashSync("dishwasher-funk", 10)
     }
 }
+
+
+const vistors = {
+    b6UTxQ: { vist: 0, last_visit_time: 0, visitors: [] },
+    i3BoGr: { vist: 0, last_visit_time: 0, visitors: [] },
+    srFwes: { vist: 0, last_visit_time: 0, visitors: [] }
+}
 ////////////////////////
 ////////////////////////
 /////MY Functions///////
+
+
 function generateRandomString() {
     var randomCode = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -44,6 +55,8 @@ function generateRandomString() {
     }
     return randomCode
 }
+
+
 function checkRegister(em) {
     const userID = Object.keys(users)
     // console.log('userID is:   ', userID)
@@ -54,6 +67,8 @@ function checkRegister(em) {
         return false
     } else { return true }
 }
+
+
 function loginCheck(em, pw) {
     const userID = Object.keys(users)
     // console.log('userID is:   ', userID)
@@ -73,6 +88,8 @@ function loginCheck(em, pw) {
 
 
 }
+
+
 function findUserIDbyEmail(em) {
     const userID = Object.keys(users)
     const user = userID.filter(item => {
@@ -80,6 +97,8 @@ function findUserIDbyEmail(em) {
     })
     return user.join('')
 }
+
+
 function urlsForUser(id) {
     const urls = []
     for (item in urlDatabase) {
@@ -89,39 +108,72 @@ function urlsForUser(id) {
     }
     return urls
 }
+
+
 function findShortURL(id) {
-    const dbKeys = Object.keys(urlDatabase);
-    return dbKeys.filter(item => { return urlDatabase[item].userID === id })
+    let dbKeys = Object.keys(urlDatabase);
+    const newkeys = dbKeys.filter(item => { return urlDatabase[item].userID === id })
+
+    return newkeys
 
 }
 //////////////////////
 /////////////////////
 ////////////////////
-//////MY SERVERSE
+//////MY SERVERSE///
+
+
 app.set("view engine", "ejs");
+
+
 
 app.get("/", (req, res) => {
     res.send("Hello!");
 });
+
+
 app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
 });
 // port listener
+
+
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
 });
+
+
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+
+
 app.get('/urls', (req, res) => {
     const userID = req.session.ids;
+    console.log('user ID is', userID)
+
     const email = req.session.user_id;
+    console.log('user email is', email)
     const id_longURL = urlsForUser(userID);
+    console.log('user long url is ', id_longURL)
+
     const id_shortURL = findShortURL(userID);
+    console.log('user shorturl is', findShortURL('userRandomID'))
+    const URLdb = urlDatabase
     const totalLength = id_longURL.length;
+
     const allShortURLs = Object.keys(urlDatabase)
-    console.log(allShortURLs)
-    const templateVars = { urls: id_longURL, user_id: userID, shortURL: id_shortURL, userEmail: email, totalLength: totalLength, showShorturls: allShortURLs };
+
+
+    const templateVars = {
+        urls: id_longURL,
+        user_id: userID,
+        shortURL: id_shortURL,
+        userEmail: email,
+        totalLength: totalLength,
+        showShorturls: allShortURLs,
+        urlDB: URLdb
+    };
     // console.log('url is:   ', templateVars.urls)
     // console.log('shortURL is:   ', templateVars.shortURL)
     // console.log('user_id is:    ', templateVars.user_id)
@@ -135,21 +187,25 @@ app.get('/urls/new', (req, res) => {
     res.render("urls_new", templateVars);
 })
 
+
 app.get("/urls/:shortURL", (req, res) => {
     let values = req.params.shortURL;
     let data = urlDatabase[values]
-    let templateVars = { shortURL: values, longURL: data };
+    let { vist } = vistors[values]
+    let templateVars = { shortURL: values, longURL: data, view: vist };
     res.render("urls_show", templateVars);
 });
+
+
 app.post('/urls/:shortURL/updata', (req, res) => {
 
     const { longURL } = req.body;
-    console.log('longurl is :   ', longURL)
+    // console.log('longurl is :   ', longURL)
     const { shortURL } = req.params
 
-    console.log('showURL is:', shortURL)
-    console.log('Longurl in database', urlDatabase[shortURL])
-    console.log('urlDATABASE IS :     ', urlDatabase)
+    // console.log('showURL is:', shortURL)
+    // console.log('Longurl in database', urlDatabase[shortURL])
+    // console.log('urlDATABASE IS :     ', urlDatabase)
 
     urlDatabase[shortURL].longURL = longURL
     res.redirect('/urls')
@@ -161,6 +217,11 @@ app.post("/urls", (req, res) => {
         longURL: longURL,
         userID: req.session.ids
     }
+    vistors[randomID] = {
+        vist: 0, last_visit_time: 0, visitors: []
+    }
+    console.log('vistor DB IS NOW:    ', vistors)
+    console.log('now urlDatabase is : ', urlDatabase)
     res.redirect('/urls')
 
 });
@@ -169,7 +230,10 @@ app.get("/u/:shortURL", (req, res) => {
     // const longURL = ...
     const { shortURL } = req.params;
     const { longURL } = urlDatabase[shortURL]
-    console.log(longURL)
+    vistors[shortURL].vist += 1
+    vistors[shortURL].last_visit_time = new Date()
+    vistors[shortURL].visitors.push(req.session.user_id)
+    console.log(vistors)
     res.redirect(longURL);
 });
 app.post('/urls/:shortURL/delete', (req, res) => {

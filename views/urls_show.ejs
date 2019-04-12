@@ -14,9 +14,13 @@
     <!-- Add EJS code here -->
     <h1>TinyApp</h1>
     <a href=#> Creat New TinyURL</a>
-    <h2>Tiny URL for :
-        <%= shortURL %>
+    <h2>Tiny URL for : <br>
+        <%= shortURL %> <br>
     </h2>
+    views:
+    <%= view %>
+
+
     <form method='POST' action='/urls/<%= shortURL %>/updata'>
         <input type='text' size='50' name='longURL' value='http//'>
         <input type='submit' value='update'>
