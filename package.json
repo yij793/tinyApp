@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/yij793/tinyApp#readme",
   "dependencies": {
+    "bcrypt": "2.0.0",
     "body-parser": "^1.18.3",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.4",
