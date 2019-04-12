@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 app.use(cookieParser()); ///using cookieParser
 app.use(bodyParser.urlencoded({ extended: true }));
+const bcrypt = require('bcrypt');
+
 
 /// MY DATABASE
 var urlDatabase = {
@@ -15,12 +17,12 @@ const users = {
     "userRandomID": {
         id: "userRandomID",
         email: "user@example.com",
-        password: "purple-monkey-dinosaur"
+        password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
     },
     "user2RandomID": {
         id: "user2RandomID",
         email: "user2@example.com",
-        password: "dishwasher-funk"
+        password: bcrypt.hashSync("dishwasher-funk", 10)
     }
 }
 app.set("view engine", "ejs");
@@ -129,9 +131,7 @@ function loginCheck(em, pw) {
     // console.log('user name is:   ', user)
     if (user.length > 0) {
         // console.log(users[user].password)
-        if (users[user].password === pw) {
-            return true
-        }
+        return bcrypt.compareSync(pw, users[user].password)
     }
 
 
@@ -193,11 +193,12 @@ app.post('/register', (req, res) => {
     res.cookie('user_id', req.body.email)
     //// ID generator to give and ID of 'object size +1'
     const id = `user${Object.keys(users).length + 1}randomID`;
-    const { email, password } = req.body
+    const { email, password } = req.body // found in the req.params object
+    const hashedPassword = bcrypt.hashSync(password, 10);
     users[id] = {
         id: id,
         email: email,
-        password: password
+        password: hashedPassword
     }
     if (checkRegister(email)) {
         res.cookie('user_id', email)
