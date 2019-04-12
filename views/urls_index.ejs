@@ -14,17 +14,20 @@
     <!-- Add EJS code here -->
     <% include partials/_header %>
     <h1>TinyApp</h1>
-    <a>creat new TinyApp</a>
+    <a href='/urls/new'>creat new TinyApp</a>
     <h2>My URLS</h2>
     <ul>
-        <% for(x in urls){%>
+        <% for(x in urls){ %>
+        <% if(urls[x].userID === user_id) { %>
         <li>
-            <form method="POST" action="/urls/<%= x %>/delete">
-                <%= x %> :
-                <%= urls[x] %>
+            <form method="POST" action='/urls/<%= x %>/delete'>
+                <%= user_id  %> :
+                <%= urls[x].longURL %>
                 <a href='/urls/ <%= x %>'>Edit</a>
-                <input type="submit" value="delete"></form>
+                <input type="submit" value="delete">
+            </form>
         </li>
+        <% } %>
         <% } %>
     </ul>
 
