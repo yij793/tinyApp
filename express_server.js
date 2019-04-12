@@ -2,10 +2,16 @@ var express = require("express");// adding express into our servers
 var app = express();/// store express() in a var
 var PORT = 8081;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-app.use(cookieParser()); ///using cookieParser
+var cookieSession = require('cookie-session') ///require cookie-session
 app.use(bodyParser.urlencoded({ extended: true }));
 const bcrypt = require('bcrypt');
+app.use(cookieSession({
+    name: 'session',
+    keys: ['ids', 'user_id'],
+
+    // Cookie Options
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 
 /// MY DATABASE
@@ -41,8 +47,9 @@ app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get('/urls', (req, res) => {
-    const userID = req.cookies.ids;
-    const email = req.cookies.user_id;
+    const userID = req.session.ids;
+    console.log(userID)
+    const email = req.session.user_id;
     const id_longURL = urlsForUser(userID);
     const id_shortURL = findShortURL(userID);
     const totalLength = id_longURL.length;
@@ -55,7 +62,7 @@ app.get('/urls', (req, res) => {
 
 
 app.get('/urls/new', (req, res) => {
-    let templateVars = { urls: urlDatabase, user_id: req.cookies.user_id };
+    let templateVars = { urls: urlDatabase, user_id: req.session.user_id };
     // console.log(templateVars.user_id)
     res.render("urls_new", templateVars);
 })
@@ -77,7 +84,7 @@ app.post("/urls", (req, res) => {
     const randomID = generateRandomString()
     urlDatabase[randomID] = {
         longURL: longURL,
-        userID: req.cookies.ids
+        userID: req.session.ids
     }
     res.redirect('/urls')
 
@@ -166,8 +173,8 @@ app.post('/login', (req, res) => {
     // console.log('input email is   ', email)
     //see if email is in data and if it match the password
     if (loginCheck(email, password)) {
-        res.cookie('user_id', email)
-        res.cookie('ids', findUserIDbyEmail(email))
+        req.session.user_id = email
+        req.session.ids = findUserIDbyEmail(email)
         res.redirect('/urls')
     } else {
         res.status(404)        // HTTP status 404: NotFound
@@ -180,8 +187,9 @@ app.get('/login', (req, res) => {
     res.render('urls_login')
 })
 app.post('/logout', (req, res) => {
-    res.clearCookie('user_id')
-    res.clearCookie('ids')
+    // res.clearCookie('user_id')
+    // res.clearCookie('ids')
+    req.session = null
     res.redirect('/urls')
 })
 app.get('/register', (req, res) => {
@@ -190,7 +198,8 @@ app.get('/register', (req, res) => {
 
 })
 app.post('/register', (req, res) => {
-    res.cookie('user_id', req.body.email)
+    req.session.user_id = req.body.email
+    console.log(req.session.user_id)
     //// ID generator to give and ID of 'object size +1'
     const id = `user${Object.keys(users).length + 1}randomID`;
     const { email, password } = req.body // found in the req.params object
@@ -201,8 +210,8 @@ app.post('/register', (req, res) => {
         password: hashedPassword
     }
     if (checkRegister(email)) {
-        res.cookie('user_id', email)
-        res.cookie('ids', id)
+        req.session.user_id = email
+        req.session.ids = id
         res.redirect('/urls')
     } else {
         res.status(403)        // HTTP status 403
