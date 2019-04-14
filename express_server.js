@@ -14,14 +14,14 @@ app.use(cookieSession({
 }))
 
 
-/// MY DATABASES
+/// URL DATABASES
 var urlDatabase = {
     b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
     i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
     srFwes: { longURL: "https://www.baidu.com", userID: "userRandomID" }
 };
 
-
+// User DATAbase
 const users = {
     "userRandomID": {
         id: "userRandomID",
@@ -35,7 +35,7 @@ const users = {
     }
 }
 
-
+// visttor Database
 const vistors = {
     b6UTxQ: { vist: 0, last_visit_time: 0, visitors: [] },
     i3BoGr: { vist: 0, last_visit_time: 0, visitors: [] },
@@ -118,9 +118,9 @@ function findShortURL(id) {
 
 }
 //////////////////////
-/////////////////////
-////////////////////
-//////MY SERVERSE///
+//////////////////////
+//////////////////////
+//////MY SERVERSE/////
 
 
 app.set("view engine", "ejs");
@@ -150,19 +150,26 @@ app.get("/hello", (req, res) => {
 
 app.get('/urls', (req, res) => {
     const userID = req.session.ids;
-    console.log('user ID is', userID)
+
+    // console.log('user ID is', userID)
 
     const email = req.session.user_id;
-    console.log('user email is', email)
+
+    // console.log('user email is', email)
+
     const id_longURL = urlsForUser(userID);
-    console.log('user long url is ', id_longURL)
+
+    // console.log('user long url is ', id_longURL)
 
     const id_shortURL = findShortURL(userID);
-    console.log('user shorturl is', findShortURL('userRandomID'))
+
+    // console.log('user shorturl is', findShortURL('userRandomID'))
     const URLdb = urlDatabase
+
     const totalLength = id_longURL.length;
 
     const allShortURLs = Object.keys(urlDatabase)
+    // console.log('all shortURL is :', allShortURLs)
 
 
     const templateVars = {
@@ -189,10 +196,10 @@ app.get('/urls/new', (req, res) => {
 
 
 app.get("/urls/:shortURL", (req, res) => {
-    let values = req.params.shortURL;
-    let data = urlDatabase[values]
-    let { vist } = vistors[values]
-    let templateVars = { shortURL: values, longURL: data, view: vist };
+    const { shortURL } = req.params;
+    const data = urlDatabase[shortURL]
+    const { vist } = vistors[shortURL]
+    const templateVars = { shortURL: shortURL, longURL: data, view: vist };
     res.render("urls_show", templateVars);
 });
 
@@ -217,25 +224,29 @@ app.post("/urls", (req, res) => {
         longURL: longURL,
         userID: req.session.ids
     }
+    // console.log('now data has been updata', urlDatabase)
     vistors[randomID] = {
         vist: 0, last_visit_time: 0, visitors: []
     }
-    console.log('vistor DB IS NOW:    ', vistors)
-    console.log('now urlDatabase is : ', urlDatabase)
+    // console.log('vistor DB IS NOW:    ', vistors)
+    // console.log('now urlDatabase is : ', urlDatabase)
     res.redirect('/urls')
 
 });
 
 app.get("/u/:shortURL", (req, res) => {
-    // const longURL = ...
     const { shortURL } = req.params;
     const { longURL } = urlDatabase[shortURL]
     vistors[shortURL].vist += 1
     vistors[shortURL].last_visit_time = new Date()
     vistors[shortURL].visitors.push(req.session.user_id)
     console.log(vistors)
+    // console.log(vistors)
     res.redirect(longURL);
 });
+app.post('/u/:shortURL', (req, res) => {
+
+})
 app.post('/urls/:shortURL/delete', (req, res) => {
     let values = req.params.shortURL;
     delete urlDatabase[values]
@@ -273,7 +284,7 @@ app.get('/register', (req, res) => {
 })
 app.post('/register', (req, res) => {
     req.session.user_id = req.body.email
-    console.log(req.session.user_id)
+    // console.log(req.session.user_id)
     //// ID generator to give and ID of 'object size +1'
     const id = `user${Object.keys(users).length + 1}randomID`;
     const { email, password } = req.body // found in the req.params object
