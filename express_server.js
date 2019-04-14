@@ -89,7 +89,7 @@ function loginCheck(em, pw) {
 
 }
 
-
+// using user email to find the user ID
 function findUserIDbyEmail(em) {
     const userID = Object.keys(users)
     const user = userID.filter(item => {
@@ -98,7 +98,7 @@ function findUserIDbyEmail(em) {
     return user.join('')
 }
 
-
+// using user_id to find the longURL that user saved
 function urlsForUser(id) {
     const urls = []
     for (item in urlDatabase) {
@@ -109,7 +109,7 @@ function urlsForUser(id) {
     return urls
 }
 
-
+// find the short URL from URLdatabse by input the user_ID
 function findShortURL(id) {
     let dbKeys = Object.keys(urlDatabase);
     const newkeys = dbKeys.filter(item => { return urlDatabase[item].userID === id })
@@ -151,17 +151,17 @@ app.get("/hello", (req, res) => {
 app.get('/urls', (req, res) => {
     const userID = req.session.ids;
 
-    // console.log('user ID is', userID)
+    // console.log('user ID is', userID) // cookie: user_id
 
-    const email = req.session.user_id;
+    const email = req.session.user_id;  // cookie: user email
 
     // console.log('user email is', email)
 
-    const id_longURL = urlsForUser(userID);
+    const id_longURL = urlsForUser(userID); //  longURL(the web urls) that match the input id(cookie)
 
     // console.log('user long url is ', id_longURL)
 
-    const id_shortURL = findShortURL(userID);
+    const id_shortURL = findShortURL(userID);// ShortURL that match the input ID(cookie)
 
     // console.log('user shorturl is', findShortURL('userRandomID'))
     const URLdb = urlDatabase
@@ -197,9 +197,9 @@ app.get('/urls/new', (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
     const { shortURL } = req.params;
-    const data = urlDatabase[shortURL]
-    const { vist } = vistors[shortURL]
-    const templateVars = { shortURL: shortURL, longURL: data, view: vist };
+    const longURL = urlDatabase[shortURL];
+    const { vist } = vistors[shortURL];
+    const templateVars = { shortURL: shortURL, longURL: longURL, view: vist };
     res.render("urls_show", templateVars);
 });
 
@@ -209,23 +209,21 @@ app.post('/urls/:shortURL/updata', (req, res) => {
     const { longURL } = req.body;
     // console.log('longurl is :   ', longURL)
     const { shortURL } = req.params
-
     // console.log('showURL is:', shortURL)
     // console.log('Longurl in database', urlDatabase[shortURL])
     // console.log('urlDATABASE IS :     ', urlDatabase)
-
-    urlDatabase[shortURL].longURL = longURL
+    urlDatabase[shortURL].longURL = longURL // updata old longURL with new one
     res.redirect('/urls')
 })
 app.post("/urls", (req, res) => {
     const { longURL } = req.body;
-    const randomID = generateRandomString()
-    urlDatabase[randomID] = {
+    const randomID = generateRandomString() // generator random shortURLs
+    urlDatabase[randomID] = {    ///creating new obj data in urlDatabase with the shortURL we just generated
         longURL: longURL,
         userID: req.session.ids
     }
     // console.log('now data has been updata', urlDatabase)
-    vistors[randomID] = {
+    vistors[randomID] = {       //creat vistors obj data named by new shortURLs
         vist: 0, last_visit_time: 0, visitors: []
     }
     // console.log('vistor DB IS NOW:    ', vistors)
@@ -237,16 +235,13 @@ app.post("/urls", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     const { shortURL } = req.params;
     const { longURL } = urlDatabase[shortURL]
-    vistors[shortURL].vist += 1
+    vistors[shortURL].vist += 1         // track the vistors and vist times and the time user visted
     vistors[shortURL].last_visit_time = new Date()
-    vistors[shortURL].visitors.push(req.session.user_id)
-    console.log(vistors)
+    vistors[shortURL].visitors.push(req.session.user_id) //this part recode use_id as array every time a user visit the longURL.However, since it is an array it will still store the same id,going to changing the array to object so the same ID will only store once'
+    // console.log(vistors)
     // console.log(vistors)
     res.redirect(longURL);
 });
-app.post('/u/:shortURL', (req, res) => {
-
-})
 app.post('/urls/:shortURL/delete', (req, res) => {
     let values = req.params.shortURL;
     delete urlDatabase[values]
@@ -286,7 +281,7 @@ app.post('/register', (req, res) => {
     req.session.user_id = req.body.email
     // console.log(req.session.user_id)
     //// ID generator to give and ID of 'object size +1'
-    const id = `user${Object.keys(users).length + 1}randomID`;
+    const id = `user${Object.keys(users).length + 1}randomID`; //generte new userID user{+1}randomID
     const { email, password } = req.body // found in the req.params object
     const hashedPassword = bcrypt.hashSync(password, 10);
     users[id] = {
