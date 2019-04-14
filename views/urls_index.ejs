@@ -15,13 +15,12 @@
     <% include partials/_header %>
     <h1>TinyApp</h1>
     <a href='/urls/new'>creat new TinyApp</a>
-    <h2>My URLS</h2>
     <ul>
         <% for( var i=0;i< totalLength; i++){ %>
         <li>
             <form method="POST" action='/urls/<%= shortURL[i] %>/delete'>
-                <a href='<%= urls[i] %>'>
-                    <%= shortURL[i]  %></a> :
+                <a href='/u/<%= shortURL[i]  %>'>
+                    <%= shortURL[i]  %></a>:
                 <%= urls[i] %>
                 <a href='/urls/<%= shortURL[i] %>'>Edit</a>
                 <input type="submit" value="delete">
@@ -32,7 +31,7 @@
     <h3>shortURL</h3>
     <% for( x of showShorturls){ %>
     <a href='/u/<%= x %>'>
-        <%= x %></a> <br>
+        <%= x %> </a> <br>
     <% } %>
 
 </body>
