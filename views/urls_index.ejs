@@ -5,35 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous">
     <title>TinyApp</title>
 </head>
 
-<body style="font-size:20px; padding:50px;">
+<body style="font-size:20px; padding:50px; background: linear-gradient(45deg, rgba(241,231,103,1) 0%, rgba(254,182,69,1) 66%, rgba(254,182,69,1) 100%);">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.8.1/js/all.js" integrity="sha384-g5uSoOSBd7KkhAMlnQILrecXvzst9TdC09/VM+pjDTCM+1il8RHz5fKANTFFb+gQ"
+        crossorigin="anonymous"></script>
     <!-- Add EJS code here -->
     <% include partials/_header %>
+    <% if(user_id){ %>
     <h1>TinyApp</h1>
-    <a href='/urls/new'>creat new TinyApp</a>
+    <h2>My URLS</h2>
     <ul>
         <% for( var i=0;i< totalLength; i++){ %>
         <li>
             <form method="POST" action='/urls/<%= shortURL[i] %>/delete'>
-                <a href='/u/<%= shortURL[i]  %>'>
+                <a href='/u/<%= shortURL[i]  %>' class="badge badge-info">
                     <%= shortURL[i]  %></a>:
                 <%= urls[i] %>
-                <a href='/urls/<%= shortURL[i] %>'>Edit</a>
-                <input type="submit" value="delete">
+                <div class="btn-group dropdown">
+                    <a href='/urls/<%= shortURL[i] %>' class="btn btn-primary">Edit </a>
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-broom"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <input type="submit" value="delete" class='"dropdown-item active"'>
+                    </div>
+                </div>
             </form>
+
         </li>
         <% } %>
     </ul>
-    <h3>shortURL</h3>
-    <% for( x of showShorturls){ %>
-    <a href='/u/<%= x %>'>
-        <%= x %> </a> <br>
     <% } %>
 
+    <h3>URLS had been created by users</h3>
+    <% for( x of showShorturls){ %>
+    <a href='/u/<%= x %>' class="badge badge-info">
+        <%= x %> </a> <br>
+    <% } %>
 </body>
 
 </html>

@@ -1,20 +1,41 @@
-<header>this is a header</header>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
+<div class='container-fluid'>
 
-<% if(user_id){ %>
-<form method='POST' action='/logout'>
-    Login as
-    <%= userEmail%> <br>
-    <input type='submit' value='Logout'>
-</form>
-<h2>My URLS</h2>
-<% }else{%>
-<form method="POST" action='/login'>
-    email: <br>
-    <input type='email' name='email'><br>
-    <br>
-    password: <br>
-    <input type='password' name='password'><br>
-    <br>
-    <input type='submit' value='login' style="background-color:DodgerBlue;">
-</form>
-<% } %>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+        <% if(user_id){ %>
+        <nav class='navbar navbar-light bg-light'>
+            <a class=" navbar-brand" href="#">
+                <img src="/docs/4.3/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top"
+                    alt="">
+                Bootstrap
+            </a>
+            <a href='/urls/new'>creat new TinyApp</a>
+            <form method='POST' action='/logout' class="nav justify-content-end">
+                <b>
+                    <%= userEmail%>
+                </b>
+                <input type='submit' value='Logout' class="btn btn-outline-success my-0 my-sm-0">
+            </form>
+        </nav>
+
+        <% }else{%>
+        <div class="jumbotron" style='background-color: beige'>
+            <h1 class="display-4">TinyApp</h1>
+            <p class="lead">With your potential, it will never Tiny.</p>
+            <hr class="my-4">
+            <br>
+            <a href='/register' class='btn btn-primary btn-lg' role="button">register with us</a> </p>
+            <p style='font: italic bold 14px/30px Georgia, serif; color:steelblue'>already have account? try <a href='/login'
+                    style='font: italic bold 20px Georgia, serif'>Login
+                </a> </p>
+        </div>
+        <% } %>
+    </body>
+</div>
