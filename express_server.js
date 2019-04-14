@@ -144,7 +144,7 @@ app.listen(PORT, () => {
 
 
 app.get("/hello", (req, res) => {
-    res.send("<html><body>Hello <b>World</b></body></html>\n");
+    res.render('hello')
 });
 
 
