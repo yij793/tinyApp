@@ -1,5 +1,5 @@
 # tinyApp project
-tinyAPP is a fullstack application build with node and express that allow user shorten long URLs
+tinyAPP is a full stack application build with node and express that allow user shorten long URLs
 
 ## dependencies:
 * bcrypt
