@@ -1,6 +1,6 @@
 # tinyApp project
 
-
+* bullet item
 ## dependencies:
 -bcrypt
 -body-parser
