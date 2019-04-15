@@ -45,7 +45,7 @@ const vistors = {
 ////////////////////////
 /////MY Functions///////
 
-
+//give a random 6 digital code
 function generateRandomString() {
     var randomCode = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -56,33 +56,26 @@ function generateRandomString() {
     return randomCode
 }
 
-
+// check if email has been register
 function checkRegister(em) {
     const userID = Object.keys(users)
-    // console.log('userID is:   ', userID)
     const user = userID.filter(item => {
         return users[item].email === em
     })
-    if (user > 0) {
+    if (user.length > 0) {
         return false
-    } else { return true }
+    } else {
+        return true
+    }
 }
 
 
 function loginCheck(em, pw) {
     const userID = Object.keys(users)
-    // console.log('userID is:   ', userID)
     const user = userID.filter(item => {
-        // console.log('items are:  ', users[item].email)
-        // console.log('password input is:   ', pw)
-        // console.log('email input is:   ', typeof em)
-        // console.log('email inside users is :  ', typeof users[item].email)
-        // console.log('true or false?   ', users[item].email === em)
         return users[item].email === em
     })
-    // console.log('user name is:   ', user)
     if (user.length > 0) {
-        // console.log(users[user].password)
         return bcrypt.compareSync(pw, users[user].password)
     }
 
@@ -117,6 +110,12 @@ function findShortURL(id) {
     return newkeys
 
 }
+/// check password is large than 8 or not
+function passwordCheck(ps) {
+    if (ps.length >= 8) {
+        return true
+    }
+}
 //////////////////////
 //////////////////////
 //////////////////////
@@ -147,30 +146,34 @@ app.get("/hello", (req, res) => {
     res.render('hello')
 });
 
-
+app.post('/urls', (req, res) => {
+    const { longURL } = req.body;
+    const randomID = generateRandomString() // generator random shortURLs
+    urlDatabase[randomID] = {    ///creating new obj data in urlDatabase with the shortURL we just generated
+        longURL: longURL,
+        userID: req.session.ids
+    }
+    vistors[randomID] = {       //creat vistors obj data named by new shortURLs
+        vist: 0, last_visit_time: 0, visitors: []
+    }
+    res.redirect('/urls')
+})
 app.get('/urls', (req, res) => {
     const userID = req.session.ids;
 
-    // console.log('user ID is', userID) // cookie: user_id
-
     const email = req.session.user_id;  // cookie: user email
-
-    // console.log('user email is', email)
 
     const id_longURL = urlsForUser(userID); //  longURL(the web urls) that match the input id(cookie)
 
-    // console.log('user long url is ', id_longURL)
-
     const id_shortURL = findShortURL(userID);// ShortURL that match the input ID(cookie)
 
-    // console.log('user shorturl is', findShortURL('userRandomID'))
-    const URLdb = urlDatabase
+    const URLdb = urlDatabase;
 
-    const totalLength = id_longURL.length;
+    const totalLength = id_longURL.length; // total length of longURLS that store in unique user
 
-    const allShortURLs = Object.keys(urlDatabase)
-    // console.log('all shortURL is :', allShortURLs)
+    const allShortURLs = Object.keys(urlDatabase);// all shortURL in an array
 
+    const views = vistors; // visitors database
 
     const templateVars = {
         urls: id_longURL,
@@ -179,18 +182,15 @@ app.get('/urls', (req, res) => {
         userEmail: email,
         totalLength: totalLength,
         showShorturls: allShortURLs,
-        urlDB: URLdb
+        urlDB: URLdb,
+        vistors: views
     };
-    // console.log('url is:   ', templateVars.urls)
-    // console.log('shortURL is:   ', templateVars.shortURL)
-    // console.log('user_id is:    ', templateVars.user_id)
     res.render("urls_index", templateVars)
 })
 
 
 app.get('/urls/new', (req, res) => {
     let templateVars = { urls: urlDatabase, user_id: req.session.user_id };
-    // console.log(templateVars.user_id)
     res.render("urls_new", templateVars);
 })
 
@@ -207,30 +207,11 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post('/urls/:shortURL/updata', (req, res) => {
 
     const { longURL } = req.body;
-    // console.log('longurl is :   ', longURL)
     const { shortURL } = req.params
-    // console.log('showURL is:', shortURL)
-    // console.log('Longurl in database', urlDatabase[shortURL])
-    // console.log('urlDATABASE IS :     ', urlDatabase)
     urlDatabase[shortURL].longURL = longURL // updata old longURL with new one
     res.redirect('/urls')
 })
-app.post("/urls", (req, res) => {
-    const { longURL } = req.body;
-    const randomID = generateRandomString() // generator random shortURLs
-    urlDatabase[randomID] = {    ///creating new obj data in urlDatabase with the shortURL we just generated
-        longURL: longURL,
-        userID: req.session.ids
-    }
-    // console.log('now data has been updata', urlDatabase)
-    vistors[randomID] = {       //creat vistors obj data named by new shortURLs
-        vist: 0, last_visit_time: 0, visitors: []
-    }
-    // console.log('vistor DB IS NOW:    ', vistors)
-    // console.log('now urlDatabase is : ', urlDatabase)
-    res.redirect('/urls')
 
-});
 
 app.get("/u/:shortURL", (req, res) => {
     const { shortURL } = req.params;
@@ -238,8 +219,6 @@ app.get("/u/:shortURL", (req, res) => {
     vistors[shortURL].vist += 1         // track the vistors and vist times and the time user visted
     vistors[shortURL].last_visit_time = new Date()
     vistors[shortURL].visitors.push(req.session.user_id) //this part recode use_id as array every time a user visit the longURL.However, since it is an array it will still store the same id,going to changing the array to object so the same ID will only store once'
-    // console.log(vistors)
-    // console.log(vistors)
     res.redirect(longURL);
 });
 app.post('/urls/:shortURL/delete', (req, res) => {
@@ -249,8 +228,6 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 })
 app.post('/login', (req, res) => {
     const { email, password } = req.body
-    // console.log('input password is   ', password)
-    // console.log('input email is   ', email)
     //see if email is in data and if it match the password
     if (loginCheck(email, password)) {
         req.session.user_id = email
@@ -279,28 +256,27 @@ app.get('/register', (req, res) => {
 })
 app.post('/register', (req, res) => {
     req.session.user_id = req.body.email
-    // console.log(req.session.user_id)
     //// ID generator to give and ID of 'object size +1'
     const id = `user${Object.keys(users).length + 1}randomID`; //generte new userID user{+1}randomID
     const { email, password } = req.body // found in the req.params object
     const hashedPassword = bcrypt.hashSync(password, 10);
-    users[id] = {
-        id: id,
-        email: email,
-        password: hashedPassword
-    }
     if (checkRegister(email)) {
         req.session.user_id = email
         req.session.ids = id
-        res.redirect('/urls')
+        if (passwordCheck(password)) {
+            users[id] = {
+                id: id,
+                email: email,
+                password: hashedPassword
+            }
+            res.redirect('/urls')
+        } else {
+            res.status(404)
+                .send('password is less than 8')
+        }
     } else {
-        res.status(403)        // HTTP status 403
-            .send('this email has already been register');
+        res.status(404)
+            .send('user has alreday been registed')
     }
-
-
-
-
-
-
 })
+
