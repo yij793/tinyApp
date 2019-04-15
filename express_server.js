@@ -58,14 +58,16 @@ function generateRandomString() {
 
 // check if email has been register
 function checkRegister(em) {
-    const userID = Object.keys(users)
-    const user = userID.filter(item => {
-        return users[item].email === em
-    })
-    if (user.length > 0) {
-        return false
-    } else {
-        return true
+    if (em) {
+        const userID = Object.keys(users)
+        const user = userID.filter(item => {
+            return users[item].email === em
+        })
+        if (user.length > 0) {
+            return false
+        } else {
+            return true
+        }
     }
 }
 
@@ -276,7 +278,7 @@ app.post('/register', (req, res) => {
         }
     } else {
         res.status(404)
-            .send('user has alreday been registed')
+            .send('you cannot register with that email, it either been register or invailed')
     }
 })
 
