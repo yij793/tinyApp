@@ -17,7 +17,6 @@
     <!-- Add EJS code here -->
     <% include partials/_header %>
     <% if(user_id){ %>
-    <h1>TinyApp</h1>
     <h2>My URLS</h2>
     <ul>
         <% for( var i=0;i< totalLength; i++){ %>
@@ -27,15 +26,39 @@
                     <%= shortURL[i]  %></a>:
                 <%= urls[i] %>
                 <div class="btn-group dropdown">
-                    <a href='/urls/<%= shortURL[i] %>' class="btn btn-primary">Edit </a>
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-broom"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <input type="submit" value="delete" class='"dropdown-item active"'>
-                    </div>
+                    <span>
+
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-broom"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href='/urls/<%= shortURL[i] %>' class='dropdown-item'>Edit </a>
+                            <button type="submit" class='dropdown-item'>
+                                delete
+                            </button>
+                        </div>
+                    </span>
+                    <span style='
+                                padding-left: 8px'>
+                        <i class="fas fa-eye"></i>:
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
+                            aria-expanded="false" aria-controls="collapseExample">
+                            <%= vistors[shortURL[i]].vist %>
+                        </a>
+                        <div class="collapse" id="collapseExample">
+                            <div class="card card-body">
+                                <b style='color: rgb(63, 63, 219)'>
+                                    <%= vistors[shortURL[i]].visitors %> </b>
+                                <p>has visted this urls at</p>
+                                <b style='color: rgb(63, 63, 219)'>
+                                    <%= vistors[shortURL[i]].last_visit_time %> </b>
+                            </div>
+                        </div>
+                    </span>
+
                 </div>
+
             </form>
 
         </li>
@@ -45,8 +68,9 @@
 
     <h3>URLS had been created by users</h3>
     <% for( x of showShorturls){ %>
-    <a href='/u/<%= x %>' class="badge badge-info">
-        <%= x %> </a> <br>
+    <a href='/u/<%= x %>' class="badge badge-info" 12>
+        <%= x %> </a> <i class="fas fa-eye"></i>:
+    <%= vistors[x].vist %> <br>
     <% } %>
 </body>
 
