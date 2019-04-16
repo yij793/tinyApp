@@ -23,12 +23,12 @@ var urlDatabase = {
 
 // User DATAbase
 const users = {
-    "userRandomID": {
+    "userRandomID": {                                       ///defalut for testing
         id: "userRandomID",
         email: "user@example.com",
         password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
     },
-    "user2RandomID": {
+    "user2RandomID": {                                     //////defalut for testing
         id: "user2RandomID",
         email: "user2@example.com",
         password: bcrypt.hashSync("dishwasher-funk", 10)
@@ -71,7 +71,7 @@ function checkRegister(em) {
     }
 }
 
-
+//
 function loginCheck(em, pw) {
     const userID = Object.keys(users)
     const user = userID.filter(item => {
@@ -122,30 +122,10 @@ function passwordCheck(ps) {
 //////////////////////
 //////////////////////
 //////MY SERVERSE/////
-
-
 app.set("view engine", "ejs");
-
-
 
 app.get("/", (req, res) => {
     res.redirect('/urls');
-});
-
-
-app.get("/urls.json", (req, res) => {
-    res.json(urlDatabase);
-});
-// port listener
-
-
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
-});
-
-
-app.get("/hello", (req, res) => {
-    res.render('hello')
 });
 
 app.post('/urls', (req, res) => {
@@ -194,9 +174,14 @@ app.get("/urls/:shortURL", (req, res) => {
     const longURL = urlDatabase[shortURL];
     const { vist } = vistors[shortURL];
     const templateVars = { shortURL: shortURL, longURL: longURL, view: vist };
-    res.render("urls_show", templateVars);
-});
+    if (urlDatabase[shortURL].userID === req.session.ids) {
+        res.render("urls_show", templateVars);
+    } else {
+        res.status(404)        // HTTP status 404: NotFound
+            .send('not authorization');
+    }
 
+});
 
 app.post('/urls/:shortURL/updata', (req, res) => {
 
@@ -205,7 +190,6 @@ app.post('/urls/:shortURL/updata', (req, res) => {
     urlDatabase[shortURL].longURL = longURL // updata old longURL with new one
     res.redirect('/urls')
 })
-
 
 app.get("/u/:shortURL", (req, res) => {
     const { shortURL } = req.params;
@@ -273,4 +257,8 @@ app.post('/register', (req, res) => {
             .send('you cannot register with that email, it either been register or invailed')
     }
 })
+// port listener
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}!`);
+});
 
