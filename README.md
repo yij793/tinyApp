@@ -8,7 +8,7 @@ tinyAPP is a full stack application build with node and express that allow user 
 * ejs
 * express
 
-##final project
+## final project
 !['screenshot'](docs/urls_page.png)
 !['screenshot'](docs/urls_login.png)
 !['screenshot'](docs/urls_afterlogin.png)
