@@ -65,13 +65,22 @@
         </li>
         <% } %>
     </ul>
+    <h3>URLS had been created by users</h3>
+    <% for( x of showShorturls){ %>
+    <a href='/u/<%= x %>' class="badge badge-info" 12>
+        <%= x %> </a>
+    <%= urlDB[x].longURL %> <i class="fas fa-eye"></i>:
+    <%= vistors[x].vist %> <br>
     <% } %>
+    <% } else{ %>
 
     <h3>URLS had been created by users</h3>
     <% for( x of showShorturls){ %>
     <a href='/u/<%= x %>' class="badge badge-info" 12>
-        <%= x %> </a> <i class="fas fa-eye"></i>:
+        <%= x %> </a>
+    <i class="fas fa-eye"></i>:
     <%= vistors[x].vist %> <br>
+    <% } %>
     <% } %>
 </body>
 
