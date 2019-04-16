@@ -16,9 +16,9 @@ app.use(cookieSession({
 
 /// URL DATABASES
 var urlDatabase = {
-    b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-    i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
-    srFwes: { longURL: "https://www.baidu.com", userID: "userRandomID" }
+    b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW", date: 20190414 },
+    i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW", date: 20190414 },
+    srFwes: { longURL: "https://www.baidu.com", userID: "userRandomID", date: 20190414 }
 };
 
 // User DATAbase
@@ -131,9 +131,11 @@ app.get("/", (req, res) => {
 app.post('/urls', (req, res) => {
     const { longURL } = req.body;
     const randomID = generateRandomString() // generator random shortURLs
+    const date = new Date()
     urlDatabase[randomID] = {    ///creating new obj data in urlDatabase with the shortURL we just generated
         longURL: longURL,
-        userID: req.session.ids
+        userID: req.session.ids,
+        date: date
     }
     vistors[randomID] = {       //creat vistors obj data named by new shortURLs
         vist: 0, last_visit_time: 0, visitors: []
@@ -171,10 +173,10 @@ app.get('/urls/new', (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
     const { shortURL } = req.params;
-    const longURL = urlDatabase[shortURL];
+    const { longURL, date } = urlDatabase[shortURL];
     const { vist } = vistors[shortURL];
-    const templateVars = { shortURL: shortURL, longURL: longURL, view: vist };
-    if (urlDatabase[shortURL].userID === req.session.ids) {
+    const templateVars = { shortURL: shortURL, longURL: longURL, view: vist, date: date };
+    if (urlDatabase[shortURL].userID === req.session.ids) { ///authorization check
         res.render("urls_show", templateVars);
     } else {
         res.status(404)        // HTTP status 404: NotFound
