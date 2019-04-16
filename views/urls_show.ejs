@@ -17,8 +17,13 @@
     <h2>Tiny URL for : <br>
         <%= shortURL %> <br>
     </h2>
-    views:
+    <span style='color:blue'> views:
+    </span>
     <%= view %>
+    <span style='color:orange'> Create at:
+    </span>
+    <%= date %>
+
     <form method='POST' action='/urls/<%= shortURL %>/updata'>
         <input type='text' size='50' name='longURL' value='https://'>
         <input type='submit' value='update'>
