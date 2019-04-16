@@ -129,7 +129,7 @@ app.set("view engine", "ejs");
 
 
 app.get("/", (req, res) => {
-    res.send("Hello!");
+    res.redirect('/urls');
 });
 
 
@@ -162,21 +162,13 @@ app.post('/urls', (req, res) => {
 })
 app.get('/urls', (req, res) => {
     const userID = req.session.ids;
-
     const email = req.session.user_id;  // cookie: user email
-
     const id_longURL = urlsForUser(userID); //  longURL(the web urls) that match the input id(cookie)
-
     const id_shortURL = findShortURL(userID);// ShortURL that match the input ID(cookie)
-
     const URLdb = urlDatabase;
-
     const totalLength = id_longURL.length; // total length of longURLS that store in unique user
-
     const allShortURLs = Object.keys(urlDatabase);// all shortURL in an array
-
     const views = vistors; // visitors database
-
     const templateVars = {
         urls: id_longURL,
         user_id: userID,
