@@ -7,6 +7,7 @@ tinyAPP is a full stack application build with node and express that allow user 
 * cookie-session
 * ejs
 * express
+* bootstrap 
 
 ## final project
 !['screenshot'](docs/urls_page.png)
@@ -14,5 +15,6 @@ tinyAPP is a full stack application build with node and express that allow user 
 !['screenshot'](docs/urls_afterlogin.png)
 
 ## getting start
-* npm install all dependencies 
-* npm start to run the app
+{($ npm install)}
+{($ npm start)}
+{(Visit localhost:8081 in your browser)}
