@@ -15,6 +15,10 @@ tinyAPP is a full stack application build with node and express that allow user 
 !['screenshot'](docs/urls_afterlogin.png)
 
 ## getting start
-* $ npm install
-* $ npm start
+```
+$ npm install
+```
+```
+$ npm start
+```
 * Visit localhost:8081 in your browser
