@@ -1,7 +1,7 @@
 # tinyApp project
 tinyAPP is a full stack application build with node and express that allow user shorten long URLs
 ***
-## dependencies:
+## Dependencies:
 * [bcrypt](https://www.npmjs.com/package/bcrypt) -A library to help you hash passwords
 * [body-parser](https://www.npmjs.com/package/body-parser) -Parse incoming request bodies in a middleware
 * [cookie-session](https://www.npmjs.com/package/cookie-session) -Simple cookie-based session middleware
@@ -9,7 +9,7 @@ tinyAPP is a full stack application build with node and express that allow user 
 * [express](https://www.npmjs.com/package/express) -Fast, unopinionated, minimalist web framework for node
 * [bootstrap](http://bootstrapdocs.com/v3.3.6/docs/) -powerful front-end framework
 ***
-## final project
+## Final project
 !['screenshot'](docs/urls_page.png)
 !['screenshot'](docs/urls_login.png)
 !['screenshot'](docs/urls_afterlogin.png)
@@ -18,8 +18,25 @@ tinyAPP is a full stack application build with node and express that allow user 
 ```
 $ npm install
 ```
+Install Dependencies
 ```
-$ npm start
+$ npm install bcrypt
+```
+```
+$ npm install body-parser
+```
+```
+$ npm install cookie-session
+```
+```
+$ npm install ejs
+```
+```
+$ npm install express
+```
+Getting start
+```
+$ npm start 
 ```
 * Visit localhost:8081 in your browser
 
