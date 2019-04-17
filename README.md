@@ -38,5 +38,5 @@ Getting start
 ```
 $ npm start 
 ```
-* Visit localhost:8081 in your browser
+### Visit localhost:8081 in your browser
 
