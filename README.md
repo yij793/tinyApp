@@ -8,7 +8,7 @@ $ npm install
 ```
 $ npm start 
 ```
-### Visit localhost:8081 in your browser
+### Visit <http://localhost:8081/> in your browser
 ***
 ## Dependencies:
 * [bcrypt](https://www.npmjs.com/package/bcrypt) -A library to help you hash passwords
