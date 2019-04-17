@@ -5,23 +5,6 @@ tinyAPP is a full stack application build with node and express that allow user 
 ```
 $ npm install
 ```
-Install Dependencies
-```
-$ npm install bcrypt
-```
-```
-$ npm install body-parser
-```
-```
-$ npm install cookie-session
-```
-```
-$ npm install ejs
-```
-```
-$ npm install express
-```
-Getting start
 ```
 $ npm start 
 ```
@@ -29,6 +12,7 @@ $ npm start
 ***
 ## Dependencies:
 * [bcrypt](https://www.npmjs.com/package/bcrypt) -A library to help you hash passwords
+* [nodemon](https://www.npmjs.com/package/nodemon) -nodemon is a tool that automatically restarting the node application when file changes
 * [body-parser](https://www.npmjs.com/package/body-parser) -Parse incoming request bodies in a middleware
 * [cookie-session](https://www.npmjs.com/package/cookie-session) -Simple cookie-based session middleware
 * [ejs](https://www.npmjs.com/package/ejs) -Embedded JavaScript templates
